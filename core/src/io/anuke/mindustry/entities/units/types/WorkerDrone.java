@@ -7,6 +7,7 @@ import io.anuke.mindustry.entities.traits.BuilderTrait;
 import io.anuke.mindustry.entities.traits.TargetTrait;
 import io.anuke.mindustry.entities.units.FlyingUnit;
 import io.anuke.mindustry.entities.units.UnitState;
+import io.anuke.mindustry.type.Item;
 import io.anuke.mindustry.world.Tile;
 import io.anuke.ucore.util.Log;
 import io.anuke.ucore.util.Mathf;
@@ -79,6 +80,11 @@ public class WorkerDrone extends FlyingUnit implements BuilderTrait{
 
     @Override
     public void behavior(){}
+
+    @Override
+    public boolean canMine(Item item){
+        return true;
+    }
 
     public void circleTo(TargetTrait trait, float range){
         target = trait;
