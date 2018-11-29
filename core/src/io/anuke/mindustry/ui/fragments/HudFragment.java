@@ -24,9 +24,13 @@ import io.anuke.ucore.scene.Element;
 import io.anuke.ucore.scene.Group;
 import io.anuke.ucore.scene.actions.Actions;
 import io.anuke.ucore.scene.event.Touchable;
-import io.anuke.ucore.scene.ui.*;
+import io.anuke.ucore.scene.ui.Image;
+import io.anuke.ucore.scene.ui.ImageButton;
+import io.anuke.ucore.scene.ui.Label;
+import io.anuke.ucore.scene.ui.TextButton;
 import io.anuke.ucore.scene.ui.layout.Stack;
 import io.anuke.ucore.scene.ui.layout.Table;
+import io.anuke.ucore.scene.ui.layout.Unit;
 import io.anuke.ucore.util.Bundles;
 import io.anuke.ucore.util.Mathf;
 
@@ -150,7 +154,7 @@ public class HudFragment extends Fragment{
         //paused table
         parent.fill(t -> {
             t.top().visible(() -> state.is(State.paused) && !Net.active());
-            t.table("clear", top -> top.add("$text.paused").pad(6).get().setFontScale(1.5f));
+            t.table("button", top -> top.add("$text.paused").pad(6f));
         });
 
         parent.fill(t -> {
@@ -193,7 +197,7 @@ public class HudFragment extends Fragment{
 
                 return coreAttackOpacity > 0;
             });
-            t.table("clear", top -> top.add("$text.coreattack").pad(6)
+            t.table("button", top -> top.add("$text.coreattack").pad(2)
             .update(label -> label.setColor(Hue.mix(Color.ORANGE, Color.SCARLET, Mathf.absin(Timers.time(), 2f, 1f)))));
         });
 
@@ -347,7 +351,7 @@ public class HudFragment extends Fragment{
         if(shown){
             shown = false;
             blockfrag.toggle(dur, in);
-            wavetable.actions(Actions.translateBy(0, (wavetable.getHeight() + dsize + 6) - wavetable.getTranslation().y, dur, in));
+            wavetable.actions(Actions.translateBy(0, (wavetable.getHeight() + dsize + Unit.dp.scl(6)) - wavetable.getTranslation().y, dur, in));
             infolabel.actions(Actions.translateBy(0, (wavetable.getHeight()) - wavetable.getTranslation().y, dur, in));
         }else{
             shown = true;
@@ -389,7 +393,7 @@ public class HudFragment extends Fragment{
     }
 
     private void addPlayButton(Table table){
-        table.right().addImageButton("icon-play", 30f, () -> {
+        table.right().addImageButton("icon-play", "right", 30f, () -> {
             if(Net.client() && players[0].isAdmin){
                 Call.onAdminRequest(players[0], AdminAction.wave);
             }else{

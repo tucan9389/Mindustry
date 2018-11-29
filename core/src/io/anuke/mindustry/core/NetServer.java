@@ -79,7 +79,9 @@ public class NetServer extends Module{
 
     public NetServer(){
         Events.on(WorldLoadEvent.class, event -> {
-            connections.clear();
+            if(!headless){
+                connections.clear();
+            }
         });
 
         Net.handleServer(Connect.class, (id, connect) -> {
@@ -596,14 +598,17 @@ public class NetServer extends Module{
     }
 
     void sync(){
+
         try{
 
             //iterate through each player
-            for(Player player : connections.values()){
+            for(Player player : playerGroup.all()){
+                if(player.isLocal) continue;
+
                 NetConnection connection = player.con;
 
-                if(!connection.isConnected()){
-                    //player disconnected, ignore them
+                if(!connection.isConnected() || !connections.containsKey(connection.id)){
+                    //player disconnected, call d/c event
                     onDisconnect(player);
                     return;
                 }

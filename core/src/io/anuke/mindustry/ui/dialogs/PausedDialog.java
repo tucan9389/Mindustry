@@ -3,6 +3,7 @@ package io.anuke.mindustry.ui.dialogs;
 import com.badlogic.gdx.Input.Keys;
 import io.anuke.mindustry.core.GameState.State;
 import io.anuke.mindustry.net.Net;
+import io.anuke.ucore.scene.style.Drawable;
 import io.anuke.ucore.scene.ui.layout.Table;
 import io.anuke.ucore.util.Bundles;
 
@@ -29,13 +30,9 @@ public class PausedDialog extends FloatingDialog{
 
     void rebuild(){
         missionTable.clear();
-        if(world.getSector() != null && !world.getSector().complete){
-            missionTable.add("[LIGHT_GRAY]" + Bundles.format("text.mission", ""));
-            missionTable.row();
-            missionTable.table(t -> {
-                world.getSector().currentMission().display(t);
-            });
-            missionTable.row();
+        missionTable.background((Drawable) null);
+        if(world.getSector() != null){
+            missionTable.background("underline");
             missionTable.add(Bundles.format("text.sector", world.getSector().x + ", " + world.getSector().y));
         }
     }
@@ -47,14 +44,14 @@ public class PausedDialog extends FloatingDialog{
             }
         });
 
-        content().table(t -> missionTable = t).colspan(mobile ? 3 : 1);
+        content().table(t -> missionTable = t).colspan(mobile ? 3 : 2);
         content().row();
 
         if(!mobile){
             float dw = 210f;
             content().defaults().width(dw).height(50).pad(5f);
 
-            content().addButton("$text.back", this::hide).colspan(2).width(dw*2 + 10f);
+            content().addButton("$text.back", this::hide).colspan(2).width(dw*2 + 20f);
 
             content().row();
             content().addButton("$text.unlocks", ui.unlocks::show);
@@ -66,7 +63,7 @@ public class PausedDialog extends FloatingDialog{
 
             content().row();
 
-            content().addButton("$text.hostserver", ui.host::show).disabled(b -> Net.active()).colspan(2).width(dw*2 + 10f);
+            content().addButton("$text.hostserver", ui.host::show).disabled(b -> Net.active()).colspan(2).width(dw*2 + 20f);
 
             content().row();
 
