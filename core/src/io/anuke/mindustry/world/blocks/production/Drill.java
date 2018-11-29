@@ -218,7 +218,7 @@ public class Drill extends Block{
     @Override
     public boolean canPlaceOn(Tile tile){
         if(isMultiblock()){
-            for(Tile other : tile.getLinkedTilesAs(this, tempTiles)){
+            for(Tile other : tile.getLinkedTilesAs(this, new Array<>())){
                 if(isValid(other)){
                     return true;
                 }

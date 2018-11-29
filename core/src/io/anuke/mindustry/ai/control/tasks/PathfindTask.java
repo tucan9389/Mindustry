@@ -23,6 +23,7 @@ import io.anuke.ucore.function.Predicate;
 public class PathfindTask implements WorkTask{
     private AsyncResult<Array<Tile>> result;
     private boolean placed;
+    protected boolean reverse;
 
     private final Tile tile;
     private final Item tag;
@@ -67,6 +68,11 @@ public class PathfindTask implements WorkTask{
             if(wait) return;
 
             if(!placed) {
+                if(reverse){
+                    out.reverse();
+                    out.add(out.peek());
+                }
+
                 for (int i = 0; i < out.size - 1; i++) {
                     Tile current = out.get(i);
                     Tile next = out.get(i + 1);

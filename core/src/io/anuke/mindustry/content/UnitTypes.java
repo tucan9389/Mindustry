@@ -52,7 +52,6 @@ public class UnitTypes implements ContentList{
             speed = 0.2f;
             maxVelocity = 0.8f;
             range = 50f;
-            healSpeed = 0.22f;
             health = 60;
         }};
 

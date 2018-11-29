@@ -4,12 +4,11 @@ import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.async.AsyncExecutor;
-import io.anuke.mindustry.ai.control.tasks.BuildBlockTask;
-import io.anuke.mindustry.ai.control.tasks.DrillTask;
-import io.anuke.mindustry.ai.control.tasks.MineTask;
+import io.anuke.mindustry.ai.control.tasks.*;
 import io.anuke.mindustry.content.Items;
 import io.anuke.mindustry.content.blocks.CraftingBlocks;
 import io.anuke.mindustry.content.blocks.ProductionBlocks;
+import io.anuke.mindustry.content.blocks.TurretBlocks;
 import io.anuke.mindustry.entities.TileEntity;
 import io.anuke.mindustry.entities.traits.BuilderTrait.BuildRequest;
 import io.anuke.mindustry.entities.units.types.WorkerDrone;
@@ -33,8 +32,6 @@ public class AI{
     private final Team team;
     private ObjectMap<Block, ObjectSet<Tile>> blocks = new ObjectMap<>();
     private IntMap<Item> tags = new IntMap<>();
-
-    private final Block drillBlock = ProductionBlocks.mechanicalDrill;
 
     public AI(Team team) {
         this.team = team;
@@ -82,15 +79,19 @@ public class AI{
         Item toMine = Items.copper;
         int amount = core.items.get(toMine);
 
-        if(amount >= 150){
-            createSmelter(drone);
-        }else if(amount >= 100){
+        if(amount >= 300){
+            createTurret(drone);
+        }else if(amount >= 100 && core.items.get(Items.lead) < 50){
             createDrill(drone, Items.lead);
-        }else if(amount >= 50){
+        }else if(amount >= 50 && getBlock(ProductionBlocks.mechanicalDrill).size < 12){
             createDrill(drone, toMine);
         }else{
             mineItem(drone, toMine, 50);
         }
+    }
+
+    void createTurret(WorkerDrone drone){
+        drone.beginTask(new TurretTask(drone.getClosestCore().tile, TurretBlocks.duo, Items.copper));
     }
 
     void createSmelter(WorkerDrone drone){
@@ -102,6 +103,10 @@ public class AI{
             tile = world.tileWorld(core.x + Tmp.v1.x, core.y + Tmp.v1.y);
         }while(tile == null || !tile.block().alwaysReplace);
 
+        drone.beginTask(new PathfindTask(tile, Items.densealloy));
+        leadDrill(drone, Items.coal, tile);
+        leadDrill(drone, Items.lead, tile);
+        leadDrill(drone, Items.copper, tile);
         drone.beginTask(new BuildBlockTask(new BuildRequest(tile.x, tile.y, 0, Recipe.getByResult(CraftingBlocks.smelter))));
     }
 
@@ -111,6 +116,10 @@ public class AI{
 
     void createDrill(WorkerDrone drone, Item item){
         drone.beginTask(new DrillTask(drone.getClosestCore().tile, item));
+    }
+
+    void leadDrill(WorkerDrone drone, Item item, Tile tile){
+        drone.beginTask(new SeekDrillTask(tile, item));
     }
 
 }

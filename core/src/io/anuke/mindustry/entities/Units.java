@@ -62,20 +62,24 @@ public class Units{
 
     /**Can be called from any thread.*/
     public static boolean anyEntities(Rectangle rect){
-        boolResult = false;
+        try{
+            boolResult = false;
 
-        Units.getNearby(rect, unit -> {
-            if(boolResult) return;
-            if(!unit.isFlying()){
-                unit.getHitbox(hitrect);
+            Units.getNearby(rect, unit -> {
+                if(boolResult) return;
+                if(!unit.isFlying()){
+                    unit.getHitbox(hitrect);
 
-                if(hitrect.overlaps(rect)){
-                    boolResult = true;
+                    if(hitrect.overlaps(rect)){
+                        boolResult = true;
+                    }
                 }
-            }
-        });
+            });
 
-        return boolResult;
+            return boolResult;
+        }catch(Exception e){
+            return false;
+        }
     }
 
     /**Returns whether there are any entities on this tile, with the hitbox expanded.*/
