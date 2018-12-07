@@ -242,8 +242,10 @@ public class MobileInput extends InputHandler implements GestureListener{
                 if(tile != null){
                     if(!request.remove){
                         rotation = request.rotation;
+                        Recipe before = recipe;
                         recipe = request.recipe;
                         tryPlaceBlock(tile.x, tile.y);
+                        recipe = before;
                     }else{
                         tryBreakBlock(tile.x, tile.y);
                     }
@@ -594,6 +596,10 @@ public class MobileInput extends InputHandler implements GestureListener{
 
         if(recipe != null){
             showGuide("construction");
+        }
+
+        if(recipe == null && mode == placing){
+            mode = none;
         }
 
         //automatically switch to placing after a new recipe is selected
