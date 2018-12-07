@@ -237,16 +237,12 @@ public class Net{
         clientListeners.put(type, listener);
     }
 
-    /**
-     * Registers a server listener for when an object is recieved.
-     */
+    /**Registers a server listener for when an object is recieved.*/
     public static <T> void handleServer(Class<T> type, BiConsumer<Integer, T> listener){
         serverListeners.put(type, (BiConsumer<Integer, Object>) listener);
     }
 
-    /**
-     * Call to handle a packet being recieved for the client.
-     */
+    /**Call to handle a packet being recieved for the client.*/
     public static void handleClientReceived(Object object){
 
         if(object instanceof StreamBegin){
