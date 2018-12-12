@@ -52,7 +52,7 @@ public abstract class BaseUnit extends Unit implements ShooterTrait{
 
     protected boolean isWave;
     protected Squad squad;
-    protected int spawner = -1;
+    protected int spawner = noSpawner;
 
     /**internal constructor used for deserialization, DO NOT USE*/
     public BaseUnit(){
@@ -76,7 +76,7 @@ public abstract class BaseUnit extends Unit implements ShooterTrait{
         Effects.effect(ExplosionFx.explosion, unit);
         Effects.shake(2f, 2f, unit);
 
-        //must run afterwards so the unit's group is not null
+        //must run afterwards so the unit's group is not null when sending the removal packet
         threads.runDelay(unit::remove);
     }
 
@@ -111,16 +111,8 @@ public abstract class BaseUnit extends Unit implements ShooterTrait{
         return type;
     }
 
-    public Tile getSpawner(){
-        return world.tile(spawner);
-    }
-
     public void setSpawner(Tile tile){
-        this.spawner = tile.packedPosition();
-    }
-
-    public void setIntSpawner(int pos){
-        this.spawner = pos;
+        this.spawner = tile.pos();
     }
 
     /**Sets this to a 'wave' unit, which means it has slightly different AI and will not run out of ammo.*/
@@ -143,7 +135,7 @@ public abstract class BaseUnit extends Unit implements ShooterTrait{
     }
 
     public void updateRespawning(){
-        if(spawner == -1) return;
+        if(spawner == noSpawner) return;
 
         Tile tile = world.tile(spawner);
         if(tile != null && tile.entity != null){
@@ -151,7 +143,7 @@ public abstract class BaseUnit extends Unit implements ShooterTrait{
                 ((SpawnerTrait) tile.entity).updateSpawning(this);
             }
         }else{
-            spawner = -1;
+            spawner = noSpawner;
         }
     }
 
@@ -222,6 +214,10 @@ public abstract class BaseUnit extends Unit implements ShooterTrait{
                     itemSize, itemSize, rotation);
             }
         }
+    }
+
+    public Tile getSpawner(){
+        return world.tile(spawner);
     }
 
     @Override
@@ -305,7 +301,7 @@ public abstract class BaseUnit extends Unit implements ShooterTrait{
 
         avoidOthers(1.25f);
 
-        if(spawner != -1 && (world.tile(spawner) == null || world.tile(spawner).entity == null)){
+        if(spawner != noSpawner && (world.tile(spawner) == null || world.tile(spawner).entity == null)){
             damage(health);
         }
 
@@ -336,7 +332,7 @@ public abstract class BaseUnit extends Unit implements ShooterTrait{
 
     @Override
     public void removed(){
-        spawner = -1;
+        spawner = noSpawner;
     }
 
     @Override

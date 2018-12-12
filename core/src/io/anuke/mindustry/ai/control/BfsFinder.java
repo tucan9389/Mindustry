@@ -15,24 +15,75 @@ public class BfsFinder{
     }
 
     public static Array<Tile> find(Tile start, Predicate<Tile> goal, Predicate<Tile> solid){
-        Queue<Tile> queue = new Queue<>();
-        //maps tile -> parent of tile
-        IntIntMap parents = new IntIntMap();
+        try{
+            Queue<Tile> queue = new Queue<>();
+            //maps tile -> parent of tile
+            IntIntMap parents = new IntIntMap();
 
-        queue.addFirst(start);
+            queue.addFirst(start);
 
-        //yay, local functions?
-        Tile result = ((Supplier<Tile>)() -> {
-            while (queue.size > 0) {
+            //yay, local functions?
+            Tile result = ((Supplier<Tile>)() -> {
+                while (queue.size > 0) {
+                    Tile tile = queue.removeFirst();
+                    for (int i = 0; i < 4; i++) {
+                        Tile other = tile.getNearby(i);
+
+                        if(other == null) continue;
+
+                        if(goal.test(other) || (!solid.test(other) && parents.get(other.pos(), -1) == -1)){
+                            queue.addLast(other);
+                            parents.put(other.pos(), tile.pos());
+
+                            if(goal.test(other)){
+                                return other;
+                            }
+                        }
+                    }
+                }
+                return null;
+            }).get();
+
+            if(result == null) return null;
+
+            Array<Tile> array = new Array<>();
+
+            array.add(result);
+
+            while(parents.get(result.pos(), -1) != -1){
+                array.add(result);
+                result = Vars.world.tile(parents.get(result.pos(), -1));
+            }
+
+            array.add(start);
+            array.reverse();
+
+            return array;
+
+        }catch(Exception e){
+            return null;
+        }
+    }
+
+
+    public static Tile findGoal(Tile start, Predicate<Tile> goal, Predicate<Tile> solid){
+        try{
+            Queue<Tile> queue = new Queue<>();
+            //maps tile -> parent of tile
+            IntIntMap parents = new IntIntMap();
+
+            queue.addFirst(start);
+
+            while(queue.size > 0){
                 Tile tile = queue.removeFirst();
-                for (int i = 0; i < 4; i++) {
+                for(int i = 0; i < 4; i++){
                     Tile other = tile.getNearby(i);
 
                     if(other == null) continue;
 
-                    if(goal.test(other) || (!solid.test(other) && parents.get(other.packedPosition(), -1) == -1)){
+                    if((goal.test(other) || (!solid.test(other) || other.target() == start)) && parents.get(other.pos(), -1) == -1){
                         queue.addLast(other);
-                        parents.put(other.packedPosition(), tile.packedPosition());
+                        parents.put(other.pos(), tile.pos());
 
                         if(goal.test(other)){
                             return other;
@@ -41,52 +92,9 @@ public class BfsFinder{
                 }
             }
             return null;
-        }).get();
 
-        if(result == null) return null;
-
-        Array<Tile> array = new Array<>();
-
-        array.add(result);
-
-        while(parents.get(result.packedPosition(), -1) != -1){
-            array.add(result);
-            result = Vars.world.tile(parents.get(result.packedPosition(), -1));
+        }catch(Exception e){
+            return null;
         }
-
-        array.add(start);
-        array.reverse();
-
-        return array;
-
-    }
-
-
-    public static Tile findGoal(Tile start, Predicate<Tile> goal, Predicate<Tile> solid){
-        Queue<Tile> queue = new Queue<>();
-        //maps tile -> parent of tile
-        IntIntMap parents = new IntIntMap();
-
-        queue.addFirst(start);
-
-        while (queue.size > 0) {
-            Tile tile = queue.removeFirst();
-            for (int i = 0; i < 4; i++) {
-                Tile other = tile.getNearby(i);
-
-                if(other == null) continue;
-
-                if((goal.test(other) || (!solid.test(other) || other.target() == start)) && parents.get(other.packedPosition(), -1) == -1){
-                    queue.addLast(other);
-                    parents.put(other.packedPosition(), tile.packedPosition());
-
-                    if(goal.test(other)){
-                        return other;
-                    }
-                }
-            }
-        }
-        return null;
-
     }
 }

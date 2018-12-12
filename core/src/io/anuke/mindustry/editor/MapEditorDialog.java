@@ -40,7 +40,6 @@ import io.anuke.ucore.util.Mathf;
 import io.anuke.ucore.util.Strings;
 
 import java.io.DataInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import static io.anuke.mindustry.Vars.*;
@@ -171,8 +170,7 @@ public class MapEditorDialog extends Dialog implements Disposable{
             }
         });
 
-        loadDialog = new MapLoadDialog(map -> {
-
+        loadDialog = new MapLoadDialog(map ->
             ui.loadGraphics(() -> {
                 try(DataInputStream stream = new DataInputStream(map.stream.get())){
                     MapMeta meta = MapIO.readMapMeta(stream);
@@ -180,12 +178,11 @@ public class MapEditorDialog extends Dialog implements Disposable{
 
                     editor.beginEdit(data, meta.tags, false);
                     view.clearStack();
-                }catch(IOException e){
+                }catch(Exception e){
                     ui.showError(Bundles.format("text.editor.errormapload", Strings.parseException(e, false)));
                     Log.err(e);
                 }
-            });
-        });
+            }));
 
         setFillParent(true);
 
@@ -567,16 +564,16 @@ public class MapEditorDialog extends Dialog implements Disposable{
             button.getImage().remove();
             button.update(() -> button.setChecked(editor.getDrawBlock() == block));
             group.add(button);
-            content.add(button).size(60f);
+            content.add(button).size(50f);
 
-            if(i++ % 3 == 2){
+            if(++i % 4 == 0){
                 content.row();
             }
         }
 
         group.getButtons().get(2).setChecked(true);
 
-        table.table("underline", extra -> extra.labelWrap(() -> editor.getDrawBlock().formalName).width(220f).center()).growX();
+        table.table("underline", extra -> extra.labelWrap(() -> editor.getDrawBlock().formalName).width(200f).center()).growX();
         table.row();
         table.add(pane).growY().fillX();
     }
