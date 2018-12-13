@@ -287,7 +287,7 @@ public class Control extends Module{
 
         Platform.instance.updateRPC();
 
-        if(!Settings.getBool("4.0-warning-2", false)){
+        if(!Settings.getBool("4.0-warning-2", true)){
 
             Timers.run(5f, () -> {
                 FloatingDialog dialog = new FloatingDialog("[accent]WARNING![]");
