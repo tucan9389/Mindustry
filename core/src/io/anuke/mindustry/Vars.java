@@ -97,6 +97,7 @@ public class Vars{
     public static float controllerMin = 0.25f;
     public static float baseControllerSpeed = 11f;
     public static boolean snapCamera = true;
+    public static float timeScale = 5f;
 
     public static ContentLoader content;
     public static GameState state;

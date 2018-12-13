@@ -40,7 +40,7 @@ public class SeekDrillTask implements WorkTask{
             drone.finishTask();
 
             if(tile != null){
-                drone.beginTask(new PathfindTask(tile, item, other -> other == dest));
+                drone.beginTask(new ConveyorPathTask(tile, item, other -> other == dest));
                 drone.beginTask(new BuildBlockTask(new BuildRequest(tile.x, tile.y, 0, Recipe.getByResult(ProductionBlocks.mechanicalDrill))));
             }else{
                 drone.beginTask(new MineTask(item, 50));

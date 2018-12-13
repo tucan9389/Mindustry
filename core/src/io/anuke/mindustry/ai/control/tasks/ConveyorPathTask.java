@@ -20,7 +20,7 @@ import io.anuke.mindustry.world.blocks.storage.CoreBlock;
 import io.anuke.mindustry.world.modules.ItemModule;
 import io.anuke.ucore.function.Predicate;
 
-public class PathfindTask implements WorkTask{
+public class ConveyorPathTask implements WorkTask{
     private AsyncResult<Array<Tile>> result;
     private boolean placed;
     protected boolean reverse;
@@ -30,13 +30,13 @@ public class PathfindTask implements WorkTask{
     private final Predicate<Tile> goal;
     private final Block block = DistributionBlocks.conveyor;
 
-    public PathfindTask(Tile tile, Item tag){
+    public ConveyorPathTask(Tile tile, Item tag){
         //todo only red currently
         this(tile, tag, other -> other.target().block() instanceof CoreBlock
                 || (other.target().block() instanceof Conveyor) && Vars.state.teams.get(Team.red).ai.tag(other) == tag);
     }
 
-    public PathfindTask(Tile tile, Item tag, Predicate<Tile> goal){
+    public ConveyorPathTask(Tile tile, Item tag, Predicate<Tile> goal){
         this.tile = tile;
         this.tag = tag;
         this.goal = goal;
