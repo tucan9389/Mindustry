@@ -114,7 +114,7 @@ public class AI{
             tile = world.tileWorld(core.x + Tmp.v1.x, core.y + Tmp.v1.y);
         }while(tile == null || !tile.block().alwaysReplace);
 
-        drone.beginTask(new PathfindTask(tile, Items.densealloy));
+        drone.beginTask(new ConveyorPathTask(tile, Items.densealloy));
         leadDrill(drone, Items.coal, tile);
         leadDrill(drone, Items.lead, tile);
         leadDrill(drone, Items.copper, tile);
@@ -126,7 +126,7 @@ public class AI{
     }
 
     void createDrill(WorkerDrone drone, Item item){
-        drone.beginTask(new DrillTask(drone.getClosestCore().tile, item));
+        drone.beginTask(new PlaceDrillTask(drone.getClosestCore().tile, item));
     }
 
     void leadDrill(WorkerDrone drone, Item item, Tile tile){

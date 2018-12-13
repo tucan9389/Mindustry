@@ -15,11 +15,11 @@ import io.anuke.mindustry.world.Build;
 import io.anuke.mindustry.world.Tile;
 import io.anuke.mindustry.world.blocks.distribution.Conveyor;
 
-public class DrillTask implements WorkTask{
+public class PlaceDrillTask implements WorkTask{
     private final AsyncResult<Tile> result;
     private final Item item;
 
-    public DrillTask(Tile core, Item item){
+    public PlaceDrillTask(Tile core, Item item){
         this.item = item;
         Block block = ProductionBlocks.mechanicalDrill;
 
@@ -40,7 +40,7 @@ public class DrillTask implements WorkTask{
             drone.finishTask();
 
             if(tile != null){
-                drone.beginTask(new PathfindTask(tile, item));
+                drone.beginTask(new ConveyorPathTask(tile, item));
                 drone.beginTask(new BuildBlockTask(new BuildRequest(tile.x, tile.y, 0, Recipe.getByResult(ProductionBlocks.mechanicalDrill))));
             }else{
                 drone.beginTask(new MineTask(item, 50));

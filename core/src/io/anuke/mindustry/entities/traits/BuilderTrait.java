@@ -181,9 +181,7 @@ public interface BuilderTrait extends Entity, TeamTrait {
         }
 
         for(BuildRequest req : removal){
-            try{
-                getPlaceQueue().removeValue(req, true);
-            }catch(Throwable t){}
+            getPlaceQueue().removeValue(req, true);
         }
 
         BuildRequest current = getCurrentRequest();
