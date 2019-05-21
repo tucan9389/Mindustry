@@ -24,19 +24,19 @@ import static io.anuke.mindustry.Vars.ui;
 public class MapView extends Element implements GestureListener{
     private MapEditor editor;
     private EditorTool tool = EditorTool.pencil;
-    private Bresenham2 br = new Bresenham2();
-    private float offsetx, offsety;
+    private Bresenham2 bresenham2D = new Bresenham2();
+    private float offsetX, offsetY;
     private float zoom = 1f;
     private boolean grid = false;
     private GridImage image = new GridImage(0, 0);
-    private Vector2 vec = new Vector2();
-    private Rectangle rect = new Rectangle();
+    private Vector2 vector2D = new Vector2();
+    private Rectangle rectangle = new Rectangle();
     private Vector2[][] brushPolygons = new Vector2[MapEditor.brushSizes.length][0];
 
     private boolean drawing;
-    private int lastx, lasty;
-    private int startx, starty;
-    private float mousex, mousey;
+    private int lastX, lastY;
+    private int startX, startY;
+    private float mouseX, mouseY;
     private EditorTool lastTool;
 
     public MapView(MapEditor editor){
@@ -56,8 +56,8 @@ public class MapView extends Element implements GestureListener{
 
             @Override
             public boolean mouseMoved(InputEvent event, float x, float y){
-                mousex = x;
-                mousey = y;
+                mouseX = x;
+                mouseY = y;
 
                 return false;
             }
@@ -77,14 +77,14 @@ public class MapView extends Element implements GestureListener{
                     tool = EditorTool.zoom;
                 }
 
-                mousex = x;
-                mousey = y;
+                mouseX = x;
+                mouseY = y;
 
                 Point2 p = project(x, y);
-                lastx = p.x;
-                lasty = p.y;
-                startx = p.x;
-                starty = p.y;
+                lastX = p.x;
+                lastY = p.y;
+                startX = p.x;
+                startY = p.y;
                 tool.touched(editor, p.x, p.y);
                 firstTouch.set(p);
 
@@ -116,7 +116,7 @@ public class MapView extends Element implements GestureListener{
                     }
 
                     ui.editor.resetSaved();
-                    Array<Point2> points = br.line(startx, starty, p.x, p.y);
+                    Array<Point2> points = bresenham2D.line(startX, startY, p.x, p.y);
                     for(Point2 point : points){
                         editor.draw(point.x, point.y, EditorTool.isPaint());
                     }
@@ -134,14 +134,14 @@ public class MapView extends Element implements GestureListener{
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer){
 
-                mousex = x;
-                mousey = y;
+                mouseX = x;
+                mouseY = y;
 
                 Point2 p = project(x, y);
 
-                if(drawing && tool.draggable && !(p.x == lastx && p.y == lasty)){
+                if(drawing && tool.draggable && !(p.x == lastX && p.y == lastY)){
                     ui.editor.resetSaved();
-                    Array<Point2> points = br.line(lastx, lasty, p.x, p.y);
+                    Array<Point2> points = bresenham2D.line(lastX, lastY, p.x, p.y);
                     for(Point2 point : points){
                         tool.touched(editor, point.x, point.y);
                     }
@@ -149,15 +149,15 @@ public class MapView extends Element implements GestureListener{
 
                 if(tool == EditorTool.line && Core.input.keyDown(KeyCode.TAB)){
                     if(Math.abs(p.x - firstTouch.x) > Math.abs(p.y - firstTouch.y)){
-                        lastx = p.x;
-                        lasty = firstTouch.y;
+                        lastX = p.x;
+                        lastY = firstTouch.y;
                     }else{
-                        lastx = firstTouch.x;
-                        lasty = p.y;
+                        lastX = firstTouch.x;
+                        lastY = p.y;
                     }
                 }else{
-                    lastx = p.x;
-                    lasty = p.y;
+                    lastX = p.x;
+                    lastY = p.y;
                 }
             }
         });
@@ -187,8 +187,8 @@ public class MapView extends Element implements GestureListener{
         !Core.input.keyDown(KeyCode.CONTROL_LEFT)){
             float ax = Core.input.axis(Binding.move_x);
             float ay = Core.input.axis(Binding.move_y);
-            offsetx -= ax * 15f / zoom;
-            offsety -= ay * 15f / zoom;
+            offsetX -= ax * 15f / zoom;
+            offsetY -= ay * 15f / zoom;
         }
 
         if(Core.input.keyTap(KeyCode.SHIFT_LEFT)){
@@ -216,8 +216,8 @@ public class MapView extends Element implements GestureListener{
         float size = Math.min(width, height);
         float sclwidth = size * zoom;
         float sclheight = size * zoom * ratio;
-        x = (x - getWidth() / 2 + sclwidth / 2 - offsetx * zoom) / sclwidth * editor.width();
-        y = (y - getHeight() / 2 + sclheight / 2 - offsety * zoom) / sclheight * editor.height();
+        x = (x - getWidth() / 2 + sclwidth / 2 - offsetX * zoom) / sclwidth * editor.width();
+        y = (y - getHeight() / 2 + sclheight / 2 - offsetY * zoom) / sclheight * editor.height();
 
         if(editor.drawBlock.size % 2 == 0 && tool != EditorTool.eraser){
             return Tmp.g1.set((int)(x - 0.5f), (int)(y - 0.5f));
@@ -231,10 +231,10 @@ public class MapView extends Element implements GestureListener{
         float size = Math.min(width, height);
         float sclwidth = size * zoom;
         float sclheight = size * zoom * ratio;
-        float px = ((float)x / editor.width()) * sclwidth + offsetx * zoom - sclwidth / 2 + getWidth() / 2;
+        float px = ((float)x / editor.width()) * sclwidth + offsetX * zoom - sclwidth / 2 + getWidth() / 2;
         float py = ((float)(y) / editor.height()) * sclheight
-        + offsety * zoom - sclheight / 2 + getHeight() / 2;
-        return vec.set(px, py);
+        + offsetY * zoom - sclheight / 2 + getHeight() / 2;
+        return vector2D.set(px, py);
     }
 
     @Override
@@ -243,12 +243,12 @@ public class MapView extends Element implements GestureListener{
         float size = Math.min(width, height);
         float sclwidth = size * zoom;
         float sclheight = size * zoom * ratio;
-        float centerx = x + width / 2 + offsetx * zoom;
-        float centery = y + height / 2 + offsety * zoom;
+        float centerx = x + width / 2 + offsetX * zoom;
+        float centery = y + height / 2 + offsetY * zoom;
 
         image.setImageSize(editor.width(), editor.height());
 
-        if(!ScissorStack.pushScissors(rect.set(x, y, width, height))){
+        if(!ScissorStack.pushScissors(rectangle.set(x, y, width, height))){
             return;
         }
 
@@ -260,7 +260,7 @@ public class MapView extends Element implements GestureListener{
         }
         Draw.reset();
 
-        if(!ScissorStack.pushScissors(rect.set(x, y, width, height))){
+        if(!ScissorStack.pushScissors(rectangle.set(x, y, width, height))){
             return;
         }
 
@@ -286,22 +286,22 @@ public class MapView extends Element implements GestureListener{
 
         if((!editor.drawBlock.isMultiblock() || tool == EditorTool.eraser) && tool != EditorTool.fill){
             if(tool == EditorTool.line && drawing){
-                Vector2 v1 = unproject(startx, starty).add(x, y);
+                Vector2 v1 = unproject(startX, startY).add(x, y);
                 float sx = v1.x, sy = v1.y;
-                Vector2 v2 = unproject(lastx, lasty).add(x, y);
+                Vector2 v2 = unproject(lastX, lastY).add(x, y);
 
                 Lines.poly(brushPolygons[index], sx, sy, scaling);
                 Lines.poly(brushPolygons[index], v2.x, v2.y, scaling);
             }
 
             if((tool.edit || (tool == EditorTool.line && !drawing)) && (!mobile || drawing)){
-                Point2 p = project(mousex, mousey);
+                Point2 p = project(mouseX, mouseY);
                 Vector2 v = unproject(p.x, p.y).add(x, y);
                 Lines.poly(brushPolygons[index], v.x, v.y, scaling);
             }
         }else{
             if((tool.edit || tool == EditorTool.line) && (!mobile || drawing)){
-                Point2 p = project(mousex, mousey);
+                Point2 p = project(mouseX, mouseY);
                 Vector2 v = unproject(p.x, p.y).add(x, y);
                 float offset = (editor.drawBlock.size % 2 == 0 ? scaling / 2f : 0f);
                 Lines.square(
@@ -330,8 +330,8 @@ public class MapView extends Element implements GestureListener{
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY){
         if(!active()) return false;
-        offsetx += deltaX / zoom;
-        offsety += deltaY / zoom;
+        offsetX += deltaX / zoom;
+        offsetY += deltaY / zoom;
         return false;
     }
 
