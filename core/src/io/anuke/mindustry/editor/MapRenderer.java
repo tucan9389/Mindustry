@@ -151,6 +151,7 @@ public class MapRenderer implements Disposable{
         tileRegion.height = textureRegion.getHeight() * Draw.scl;
 
         drawMesh(mesh, tile, textureRegion, indexDecal, tileRegion, false);
+        mesh.setColor(Color.WHITE);
     }
 
 
