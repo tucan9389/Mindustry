@@ -42,10 +42,7 @@ public class MapView extends Element implements GestureListener{
     public MapView(MapEditor editor){
         this.editor = editor;
 
-        for(int i = 0; i < MapEditor.brushSizes.length; i++){
-            float size = MapEditor.brushSizes[i];
-            brushPolygons[i] = Geometry.pixelCircle(size, (index, x, y) -> Mathf.dst(x, y, index, index) <= index - 0.5f);
-        }
+        initiateBrushPolygons();
 
         Core.input.getInputProcessors().insert(0, new GestureDetector(20, 0.5f, 2, 0.15f, this));
         touchable(Touchable.enabled);
@@ -147,20 +144,31 @@ public class MapView extends Element implements GestureListener{
                     }
                 }
 
-                if(tool == EditorTool.line && Core.input.keyDown(KeyCode.TAB)){
-                    if(Math.abs(p.x - firstTouch.x) > Math.abs(p.y - firstTouch.y)){
-                        lastX = p.x;
-                        lastY = firstTouch.y;
-                    }else{
-                        lastX = firstTouch.x;
-                        lastY = p.y;
-                    }
-                }else{
-                    lastX = p.x;
-                    lastY = p.y;
-                }
+                setLastXYtoDragged(p, firstTouch);
             }
         });
+    }
+
+    private void setLastXYtoDragged(Point2 p, Point2 firstTouch) {
+        if(tool == EditorTool.line && Core.input.keyDown(KeyCode.TAB)){
+            if(Math.abs(p.x - firstTouch.x) > Math.abs(p.y - firstTouch.y)){
+                lastX = p.x;
+                lastY = firstTouch.y;
+            }else{
+                lastX = firstTouch.x;
+                lastY = p.y;
+            }
+        }else{
+            lastX = p.x;
+            lastY = p.y;
+        }
+    }
+
+    private void initiateBrushPolygons() {
+        for(int i = 0; i < MapEditor.brushSizes.length; i++){
+            float size = MapEditor.brushSizes[i];
+            brushPolygons[i] = Geometry.pixelCircle(size, (index, x, y) -> Mathf.dst(x, y, index, index) <= index - 0.5f);
+        }
     }
 
     public EditorTool getTool(){
@@ -185,10 +193,10 @@ public class MapView extends Element implements GestureListener{
 
         if(Core.scene.getKeyboardFocus() == null || !(Core.scene.getKeyboardFocus() instanceof TextField) &&
         !Core.input.keyDown(KeyCode.CONTROL_LEFT)){
-            float ax = Core.input.axis(Binding.move_x);
-            float ay = Core.input.axis(Binding.move_y);
-            offsetX -= ax * 15f / zoom;
-            offsetY -= ay * 15f / zoom;
+            float axisX = Core.input.axis(Binding.move_x);
+            float axisY = Core.input.axis(Binding.move_y);
+            offsetX -= axisX * 15f / zoom;
+            offsetY -= axisY * 15f / zoom;
         }
 
         if(Core.input.keyTap(KeyCode.SHIFT_LEFT)){
@@ -214,10 +222,10 @@ public class MapView extends Element implements GestureListener{
     private Point2 project(float x, float y){
         float ratio = 1f / ((float)editor.width() / editor.height());
         float size = Math.min(width, height);
-        float sclwidth = size * zoom;
-        float sclheight = size * zoom * ratio;
-        x = (x - getWidth() / 2 + sclwidth / 2 - offsetX * zoom) / sclwidth * editor.width();
-        y = (y - getHeight() / 2 + sclheight / 2 - offsetY * zoom) / sclheight * editor.height();
+        float scaleWidth = size * zoom;
+        float scaleHeight = size * zoom * ratio;
+        x = (x - getWidth() / 2 + scaleWidth / 2 - offsetX * zoom) / scaleWidth * editor.width();
+        y = (y - getHeight() / 2 + scaleHeight / 2 - offsetY * zoom) / scaleHeight * editor.height();
 
         if(editor.drawBlock.size % 2 == 0 && tool != EditorTool.eraser){
             return Tmp.g1.set((int)(x - 0.5f), (int)(y - 0.5f));
@@ -229,11 +237,11 @@ public class MapView extends Element implements GestureListener{
     private Vector2 unproject(int x, int y){
         float ratio = 1f / ((float)editor.width() / editor.height());
         float size = Math.min(width, height);
-        float sclwidth = size * zoom;
-        float sclheight = size * zoom * ratio;
-        float px = ((float)x / editor.width()) * sclwidth + offsetX * zoom - sclwidth / 2 + getWidth() / 2;
-        float py = ((float)(y) / editor.height()) * sclheight
-        + offsetY * zoom - sclheight / 2 + getHeight() / 2;
+        float scaleWidth = size * zoom;
+        float scaleHeight = size * zoom * ratio;
+        float px = ((float)x / editor.width()) * scaleWidth + offsetX * zoom - scaleWidth / 2 + getWidth() / 2;
+        float py = ((float)(y) / editor.height()) * scaleHeight
+        + offsetY * zoom - scaleHeight / 2 + getHeight() / 2;
         return vector2D.set(px, py);
     }
 
@@ -241,10 +249,10 @@ public class MapView extends Element implements GestureListener{
     public void draw(){
         float ratio = 1f / ((float)editor.width() / editor.height());
         float size = Math.min(width, height);
-        float sclwidth = size * zoom;
-        float sclheight = size * zoom * ratio;
-        float centerx = x + width / 2 + offsetX * zoom;
-        float centery = y + height / 2 + offsetY * zoom;
+        float scaleWidth = size * zoom;
+        float scaleHeight = size * zoom * ratio;
+        float centerX = x + width / 2 + offsetX * zoom;
+        float centerY = y + height / 2 + offsetY * zoom;
 
         image.setImageSize(editor.width(), editor.height());
 
@@ -254,9 +262,9 @@ public class MapView extends Element implements GestureListener{
 
         Draw.color(Pal.remove);
         Lines.stroke(2f);
-        Lines.rect(centerx - sclwidth / 2 - 1, centery - sclheight / 2 - 1, sclwidth + 2, sclheight + 2);
+        Lines.rect(centerX - scaleWidth / 2 - 1, centerY - scaleHeight / 2 - 1, scaleWidth + 2, scaleHeight + 2);
         if(Core.scene.getKeyboardFocus() != null && isDescendantOf(Core.scene.getKeyboardFocus())){
-            editor.renderer().draw(centerx - sclwidth / 2, centery - sclheight / 2, sclwidth, sclheight);
+            editor.renderer().draw(centerX - scaleWidth / 2, centerY - scaleHeight / 2, scaleWidth, scaleHeight);
         }
         Draw.reset();
 
@@ -264,20 +272,9 @@ public class MapView extends Element implements GestureListener{
             return;
         }
 
-        if(grid){
-            Draw.color(Color.GRAY);
-            image.setBounds(centerx - sclwidth / 2, centery - sclheight / 2, sclwidth, sclheight);
-            image.draw();
-            Draw.color();
-        }
+        drawGrid(scaleWidth, scaleHeight, centerX, centerY);
 
-        int index = 0;
-        for(int i = 0; i < MapEditor.brushSizes.length; i++){
-            if(editor.brushSize == MapEditor.brushSizes[i]){
-                index = i;
-                break;
-            }
-        }
+        int brushSizeIndex = setBrushSizeIndex();
 
         float scaling = zoom * Math.min(width, height) / editor.width();
 
@@ -290,14 +287,14 @@ public class MapView extends Element implements GestureListener{
                 float sx = v1.x, sy = v1.y;
                 Vector2 v2 = unproject(lastX, lastY).add(x, y);
 
-                Lines.poly(brushPolygons[index], sx, sy, scaling);
-                Lines.poly(brushPolygons[index], v2.x, v2.y, scaling);
+                Lines.poly(brushPolygons[brushSizeIndex], sx, sy, scaling);
+                Lines.poly(brushPolygons[brushSizeIndex], v2.x, v2.y, scaling);
             }
 
             if((tool.edit || (tool == EditorTool.line && !drawing)) && (!mobile || drawing)){
                 Point2 p = project(mouseX, mouseY);
                 Vector2 v = unproject(p.x, p.y).add(x, y);
-                Lines.poly(brushPolygons[index], v.x, v.y, scaling);
+                Lines.poly(brushPolygons[brushSizeIndex], v.x, v.y, scaling);
             }
         }else{
             if((tool.edit || tool == EditorTool.line) && (!mobile || drawing)){
@@ -318,6 +315,26 @@ public class MapView extends Element implements GestureListener{
 
         ScissorStack.popScissors();
         ScissorStack.popScissors();
+    }
+
+    private int setBrushSizeIndex() {
+        int brushSizeIndex = 0;
+        for(int i = 0; i < MapEditor.brushSizes.length; i++){
+            if(editor.brushSize == MapEditor.brushSizes[i]){
+                brushSizeIndex = i;
+                break;
+            }
+        }
+        return brushSizeIndex;
+    }
+
+    private void drawGrid(float scaleWidth, float scaleHeight, float centerX, float centerY) {
+        if(grid) {
+            Draw.color(Color.GRAY);
+            image.setBounds(centerX - scaleWidth / 2, centerY - scaleHeight / 2, scaleWidth, scaleHeight);
+            image.draw();
+            Draw.color();
+        }
     }
 
     private boolean active(){
