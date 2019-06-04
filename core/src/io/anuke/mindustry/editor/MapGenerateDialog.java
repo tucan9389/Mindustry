@@ -27,21 +27,22 @@ import static io.anuke.mindustry.Vars.*;
 
 @SuppressWarnings("unchecked")
 public class MapGenerateDialog extends FloatingDialog{
+    private final Supplier<GenerateFilter>[] filterTypes = new Supplier[]{NoiseFilter::new, ScatterFilter::new, TerrainFilter::new, DistortFilter::new, RiverNoiseFilter::new, OreFilter::new, MedianFilter::new};
     private final MapEditor editor;
+
     private Pixmap pixmap;
     private Texture texture;
     private GenerateInput input = new GenerateInput();
     private Array<GenerateFilter> filters = new Array<>();
     private int scaling = mobile ? 3 : 1;
-    private Supplier<GenerateFilter>[] filterTypes = new Supplier[]{NoiseFilter::new, ScatterFilter::new, TerrainFilter::new, DistortFilter::new, RiverNoiseFilter::new, OreFilter::new};
     private Table filterTable;
 
     private AsyncExecutor executor = new AsyncExecutor(1);
     private AsyncResult<Void> result;
     private boolean generating;
-    private DummyTile returnTile = new DummyTile();
+    private GenTile returnTile = new GenTile();
 
-    private DummyTile[][] buffer1, buffer2;
+    private GenTile[][] buffer1, buffer2;
 
     public MapGenerateDialog(MapEditor editor){
         super("$editor.generate");
@@ -98,12 +99,12 @@ public class MapGenerateDialog extends FloatingDialog{
         rebuildFilters();
     }
 
-    DummyTile[][] create(){
-        DummyTile[][] out = new DummyTile[editor.width() / scaling][editor.height() / scaling];
+    GenTile[][] create(){
+        GenTile[][] out = new GenTile[editor.width() / scaling][editor.height() / scaling];
 
         for(int x = 0; x < out.length; x++){
             for(int y = 0; y < out[0].length; y++){
-                out[x][y] = new DummyTile();
+                out[x][y] = new GenTile();
             }
         }
         return out;
@@ -187,7 +188,7 @@ public class MapGenerateDialog extends FloatingDialog{
         selection.show();
     }
 
-    DummyTile dset(Tile tile){
+    GenTile dset(Tile tile){
         returnTile.set(tile);
         return returnTile;
     }
@@ -364,7 +365,7 @@ public class MapGenerateDialog extends FloatingDialog{
             this.rotation = (byte)rotation;
         }
 
-        void set(DummyTile other){
+        void set(GenTile other){
             this.floor = other.floor;
             this.block = other.block;
             this.ore = other.ore;
