@@ -17,7 +17,7 @@ public class MechanicFactory {
             case "dart-ship":
                 mech = new dart(name, flying);
             case "javeline-ship":
-                mech = new javelin(name, flying);
+                mech = new javeline(name, flying);
             case "trident-ship":
                 mech = new trident(name, flying);
             case "glaive-ship":
