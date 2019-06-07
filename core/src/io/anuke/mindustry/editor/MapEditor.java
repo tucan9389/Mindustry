@@ -240,13 +240,15 @@ public class MapEditor{
 
     public void undo(){
         if(stack.canUndo()){
-            stack.undo();
+            DrawOperation currentOp = stack.undo();
+            currentOp.undo();
         }
     }
 
     public void redo(){
         if(stack.canRedo()){
-            stack.redo();
+            DrawOperation currentOp = stack.redo();
+            currentOp.redo();
         }
     }
 
