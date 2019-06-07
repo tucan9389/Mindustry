@@ -240,14 +240,14 @@ public class MapEditor{
 
     public void undo(){
         if(stack.canUndo()){
-            DrawOperation currentOp = stack.undo();
+            Rollbackable currentOp = stack.undo();
             currentOp.undo();
         }
     }
 
     public void redo(){
         if(stack.canRedo()){
-            DrawOperation currentOp = stack.redo();
+            Rollbackable currentOp = stack.redo();
             currentOp.redo();
         }
     }

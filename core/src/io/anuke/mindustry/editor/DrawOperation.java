@@ -11,7 +11,7 @@ import io.anuke.mindustry.world.blocks.Floor;
 import static io.anuke.mindustry.Vars.content;
 import static io.anuke.mindustry.Vars.world;
 
-public class DrawOperation{
+public class DrawOperation implements Rollbackable{
     private MapEditor editor;
     private LongArray array = new LongArray();
 
