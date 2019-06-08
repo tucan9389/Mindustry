@@ -9,18 +9,16 @@ public class Mechs implements ContentList{
 
     public static Mech starter;
 
-    private MechanicFactory mechanicFactory = new MechanicFactory();
-
     @Override
     public void load(){
-        alpha = mechanicFactory.createMechanic("alpha-mech", false);
-        delta = mechanicFactory.createMechanic("delta-mech", false);
-        tau = mechanicFactory.createMechanic("tau-mech", false);
-        omega = mechanicFactory.createMechanic("omega-mech", false);
-        dart = mechanicFactory.createMechanic("dart-ship", true);
-        javelin = mechanicFactory.createMechanic("javelin-ship", true);
-        trident = mechanicFactory.createMechanic("trident-ship", true);
-        glaive = mechanicFactory.createMechanic("glaive-ship", true);
+        alpha = MechanicFactory.createMechanic("alpha-mech", false);
+        delta = MechanicFactory.createMechanic("delta-mech", false);
+        tau = MechanicFactory.createMechanic("tau-mech", false);
+        omega = MechanicFactory.createMechanic("omega-mech", false);
+        dart = MechanicFactory.createMechanic("dart-ship", true);
+        javelin = MechanicFactory.createMechanic("javelin-ship", true);
+        trident = MechanicFactory.createMechanic("trident-ship", true);
+        glaive = MechanicFactory.createMechanic("glaive-ship", true);
         starter = dart;
     }
 }

@@ -3,7 +3,7 @@ package io.anuke.mindustry.entities.mechanic;
 import io.anuke.mindustry.type.Mech;
 
 public class MechanicFactory {
-    public Mech createMechanic(String name, boolean flying){
+    public static Mech createMechanic(String name, boolean flying){
         Mech mech = null;
         switch(name) {
             case "alpha-mech":
