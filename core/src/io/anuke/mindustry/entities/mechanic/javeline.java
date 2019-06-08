@@ -16,12 +16,12 @@ import io.anuke.mindustry.graphics.Pal;
 import io.anuke.mindustry.type.Mech;
 import io.anuke.mindustry.type.Weapon;
 
-public class javelin extends Mech {
+public class javeline extends Mech {
     float minV = 3.6f;
     float maxV = 6f;
     TextureRegion shield;
 
-    public javelin(String name, boolean flying) {
+    public javeline(String name, boolean flying) {
         super(name, flying);
         drillPower = -1;
         speed = 0.11f;

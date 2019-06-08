@@ -13,11 +13,11 @@ public class MechanicFactory {
             case "tau-mech":
                 mech = new tau(name, flying);
             case "omega-mech":
-                mech = new tau(name, flying);
+                mech = new omega(name, flying);
             case "dart-ship":
                 mech = new dart(name, flying);
             case "javeline-ship":
-                mech = new javelin(name, flying);
+                mech = new javeline(name, flying);
             case "trident-ship":
                 mech = new trident(name, flying);
             case "glaive-ship":
