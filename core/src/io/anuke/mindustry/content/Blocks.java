@@ -1,6 +1,7 @@
 package io.anuke.mindustry.content;
 
 import io.anuke.arc.Core;
+import io.anuke.arc.function.BooleanProvider;
 import io.anuke.arc.graphics.Color;
 import io.anuke.arc.graphics.g2d.*;
 import io.anuke.arc.math.Mathf;
@@ -404,7 +405,6 @@ public class Blocks implements ContentList{
         launchPad = BlockFactory.createBlock("launch-pad");
 
         launchPadLarge = BlockFactory.createBlock("launch-pad-large");
-
 
         //endregion
         //region turrets
