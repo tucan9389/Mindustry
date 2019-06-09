@@ -6,8 +6,8 @@ import io.anuke.mindustry.content.Fx;
 import io.anuke.mindustry.type.Mech;
 import io.anuke.mindustry.type.Weapon;
 
-public class glaive extends Mech {
-    public glaive(String name, boolean flying) {
+public class Glaive extends Mech {
+    public Glaive(String name, boolean flying) {
         super(name, flying);
         drillPower = 4;
         mineSpeed = 1.3f;

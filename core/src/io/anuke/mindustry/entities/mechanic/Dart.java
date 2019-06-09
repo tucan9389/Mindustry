@@ -6,8 +6,8 @@ import io.anuke.mindustry.graphics.Pal;
 import io.anuke.mindustry.type.Mech;
 import io.anuke.mindustry.type.Weapon;
 
-public class dart extends Mech {
-    public dart(String name, boolean flying) {
+public class Dart extends Mech {
+    public Dart(String name, boolean flying) {
         super(name, flying);
         drillPower = 1;
         mineSpeed = 0.9f;

@@ -8,8 +8,8 @@ import io.anuke.mindustry.entities.type.Player;
 import io.anuke.mindustry.type.Mech;
 import io.anuke.mindustry.type.Weapon;
 
-public class alpha extends Mech {
-    public alpha(String name, boolean flying) {
+public class Alpha extends Mech {
+    public Alpha(String name, boolean flying) {
         super(name, flying);
         drillPower = 1;
         mineSpeed = 1.5f;
