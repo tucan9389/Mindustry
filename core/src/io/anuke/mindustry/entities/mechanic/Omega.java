@@ -13,10 +13,10 @@ import io.anuke.mindustry.graphics.Shaders;
 import io.anuke.mindustry.type.Mech;
 import io.anuke.mindustry.type.Weapon;
 
-public class omega extends Mech {
+public class Omega extends Mech {
     protected TextureRegion armorRegion;
 
-    public omega(String name, boolean flying) {
+    public Omega(String name, boolean flying) {
         super(name, flying);
         drillPower = 2;
         mineSpeed = 1.5f;

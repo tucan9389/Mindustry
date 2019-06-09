@@ -9,13 +9,13 @@ import io.anuke.mindustry.graphics.Pal;
 import io.anuke.mindustry.type.Mech;
 import io.anuke.mindustry.type.Weapon;
 
-public class tau extends Mech {
+public class Tau extends Mech {
     float healRange = 60f;
     float healAmount = 10f;
     float healReload = 160f;
     boolean wasHealed;
 
-    public tau(String name, boolean flying) {
+    public Tau(String name, boolean flying) {
         super(name, flying);
         drillPower = 4;
         mineSpeed = 3f;

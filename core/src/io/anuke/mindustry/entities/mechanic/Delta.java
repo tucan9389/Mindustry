@@ -12,10 +12,10 @@ import io.anuke.mindustry.graphics.Pal;
 import io.anuke.mindustry.type.Mech;
 import io.anuke.mindustry.type.Weapon;
 
-public class delta extends Mech {
+public class Delta extends Mech {
     float cooldown = 120;
 
-    public delta(String name, boolean flying) {
+    public Delta(String name, boolean flying) {
         super(name, flying);
 
         drillPower = -1;

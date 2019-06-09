@@ -7,8 +7,8 @@ import io.anuke.mindustry.entities.type.Player;
 import io.anuke.mindustry.type.Mech;
 import io.anuke.mindustry.type.Weapon;
 
-public class trident extends Mech {
-    public trident(String name, boolean flying) {
+public class Trident extends Mech {
+    public Trident(String name, boolean flying) {
         super(name, flying);
         drillPower = 2;
         speed = 0.15f;
