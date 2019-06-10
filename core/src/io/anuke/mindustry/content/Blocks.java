@@ -207,6 +207,16 @@ public class Blocks implements ContentList{
 
         darkMetal = BlockFactory.createBlock("dark-metal");
 
+        oreScrap = new OreBlock(Items.scrap);
+        oreCoal = new OreBlock(Items.coal);
+        oreTitanium = new OreBlock(Items.titanium);
+        oreThorium = new OreBlock(Items.thorium);
+
+        //endregion
+        //region crafting
+
+        graphitePress = BlockFactory.createBlock("graphite-press");
+
         multiPress = BlockFactory.createBlock("multi-press");
 
         siliconSmelter = BlockFactory.createBlock("silicon-smelter");
